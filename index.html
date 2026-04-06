@@ -2,607 +2,852 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Cocoa Bliss — From Vaibhavi </title>
-<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,700;0,6..96,900;1,6..96,400;1,6..96,700&family=Tenor+Sans&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Cocoa Bliss — Maison du Chocolat</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cormorant+SC:wght@300;400;600&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet"/>
 <style>
-:root{
-  --ink:#080300;--deep:#100500;--choc:#1b0a02;--mocha:#2e1004;--teak:#5c2509;
-  --gold:#c8973a;--gold2:#e8c06a;--gold3:#f5d98a;--amber:#d4892a;
-  --cream:#fdf6ed;--parch:#f8ead4;--white:#fffdf9;
-  --glass:rgba(255,253,249,0.03);--glass2:rgba(200,151,58,0.07);
-  --border:rgba(200,151,58,0.15);--border2:rgba(200,151,58,0.32);
-  --shadow:0 32px 90px rgba(0,0,0,0.6);--glow:0 0 60px rgba(200,151,58,0.2);
-  --r:18px;--rs:10px;
+:root {
+  --obsidian:   #0d0906;
+  --ink:        #161009;
+  --espresso:   #1e1208;
+  --bark:       #2c1a0e;
+  --mahogany:   #4a2512;
+  --bronze:     #7a4425;
+  --gold:       #c8972a;
+  --gold-light: #e8c46a;
+  --gold-pale:  #f5e4b0;
+  --ecru:       #f8f2e8;
+  --parchment:  #ede4d3;
+  --linen:      #e5d9c4;
+  --text-ecru:  #f0e8d8;
+  --text-muted: #a08060;
+  --r: 0px;
+  --t: 0.45s cubic-bezier(.22,1,.36,1);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{font-family:'Outfit',sans-serif;background:var(--ink);color:var(--cream);overflow-x:hidden;cursor:none}
-::selection{background:rgba(200,151,58,0.3);color:var(--cream)}
-::-webkit-scrollbar{width:5px}
-::-webkit-scrollbar-track{background:var(--deep)}
-::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--gold),var(--amber));border-radius:4px}
-
-/* CURSOR */
-#cur{position:fixed;width:12px;height:12px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .22s,height .22s;mix-blend-mode:difference}
-#cur-ring{position:fixed;width:38px;height:38px;border:1.5px solid rgba(200,151,58,0.45);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .3s,height .3s,opacity .3s}
-
-/* GRAIN */
-#grain{position:fixed;inset:0;z-index:9000;pointer-events:none;opacity:0.032;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-repeat:repeat;background-size:256px}
+body::before {
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  background-size:180px;pointer-events:none;z-index:9999;opacity:.6;
+}
+body {
+  font-family:'Jost',sans-serif;
+  background:var(--obsidian);color:var(--ecru);overflow-x:hidden;cursor:none;
+}
+#cursor,#cursor-follower{
+  position:fixed;top:0;left:0;border-radius:50%;pointer-events:none;z-index:10000;
+  transform:translate(-50%,-50%);
+}
+#cursor{width:7px;height:7px;background:var(--gold);}
+#cursor-follower{
+  width:34px;height:34px;
+  border:1px solid rgba(200,151,42,0.5);
+  transition:transform 0.1s ease;
+}
 
 /* ── HEADER ── */
-header{position:fixed;top:0;left:0;right:0;z-index:800;padding:0 44px;height:74px;display:flex;align-items:center;justify-content:space-between;transition:background .4s,border-color .4s;border-bottom:1px solid transparent}
-header.scrolled{background:rgba(8,3,0,0.9);backdrop-filter:blur(20px);border-bottom-color:var(--border)}
-.logo{display:flex;align-items:center;gap:13px;text-decoration:none}
-.logo-mark{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--amber));display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 0 0 1px rgba(200,151,58,0.35),var(--glow);flex-shrink:0;position:relative;overflow:hidden}
-.logo-mark::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.22),transparent 60%);border-radius:50%}
-.logo-text h1{font-family:'Bodoni Moda',serif;font-size:1.3rem;font-weight:900;color:var(--cream);letter-spacing:.04em;line-height:1}
-.logo-text span{font-family:'Tenor Sans',sans-serif;font-size:.62rem;color:var(--gold);letter-spacing:.28em;text-transform:uppercase;display:block;margin-top:3px}
-nav{display:flex;gap:4px;align-items:center}
-nav a{color:rgba(253,246,237,.6);text-decoration:none;font-size:.8rem;font-weight:500;padding:8px 16px;border-radius:100px;letter-spacing:.06em;text-transform:uppercase;transition:all .25s}
-nav a:hover{color:var(--gold2);background:var(--glass2)}
-.nav-cta{background:linear-gradient(135deg,var(--gold),var(--amber));color:var(--ink)!important;font-weight:700!important;padding:9px 22px!important;box-shadow:0 4px 20px rgba(200,151,58,.32)}
-.nav-cta:hover{transform:translateY(-1px);box-shadow:0 8px 28px rgba(200,151,58,.5)!important;filter:brightness(1.06)}
-.ham{display:none;background:none;border:none;cursor:none;flex-direction:column;gap:5px;padding:8px}
-.ham span{display:block;width:22px;height:1.5px;background:var(--cream);transition:.3s;border-radius:2px}
+header{position:fixed;top:0;left:0;right:0;z-index:500;}
+.hbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:24px 56px;
+  background:linear-gradient(180deg,rgba(13,9,6,0.97) 0%,rgba(13,9,6,0) 100%);
+  transition:background var(--t),padding var(--t);
+}
+.hbar.scrolled{
+  background:rgba(13,9,6,0.97);padding:16px 56px;
+  border-bottom:1px solid rgba(200,151,42,0.1);
+  backdrop-filter:blur(20px);
+}
+.logo{text-decoration:none;text-align:center;}
+.logo-mark{
+  font-family:'Cormorant SC',serif;font-size:1.5rem;font-weight:600;
+  letter-spacing:0.22em;color:var(--gold-light);display:block;line-height:1;
+}
+.logo-sub{
+  font-size:0.56rem;font-weight:300;letter-spacing:0.5em;
+  color:var(--text-muted);text-transform:uppercase;display:block;margin-top:3px;
+}
+nav{display:flex;gap:36px;}
+nav a{
+  font-size:0.7rem;font-weight:400;letter-spacing:0.28em;text-transform:uppercase;
+  color:var(--text-muted);text-decoration:none;transition:color var(--t);position:relative;
+}
+nav a::after{
+  content:'';position:absolute;bottom:-3px;left:0;right:100%;height:1px;
+  background:var(--gold);transition:right var(--t);
+}
+nav a:hover{color:var(--gold-light);}
+nav a:hover::after{right:0;}
+.h-cta{
+  font-size:0.66rem;letter-spacing:0.28em;text-transform:uppercase;
+  color:var(--gold);border:1px solid rgba(200,151,42,0.4);
+  padding:10px 24px;text-decoration:none;transition:var(--t);
+}
+.h-cta:hover{background:var(--gold);color:var(--obsidian);}
 
 /* ── HERO ── */
-.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:100px 24px 90px;position:relative;overflow:hidden}
-.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 65%,rgba(80,28,6,.65) 0%,transparent 70%),radial-gradient(ellipse 50% 40% at 20% 20%,rgba(200,151,58,.07) 0%,transparent 60%),url('https://images.unsplash.com/photo-1548907040-4d42bfc5f35d?w=1800&q=80') center/cover no-repeat;filter:brightness(.32) saturate(1.2)}
-.hero-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,var(--ink) 0%,transparent 18%,transparent 72%,var(--ink) 100%)}
-.orb{position:absolute;border-radius:50%;pointer-events:none;animation:floatOrb linear infinite}
-.o1{width:500px;height:500px;background:radial-gradient(circle,rgba(200,151,58,.06) 0%,transparent 70%);top:-100px;right:-120px;animation-duration:20s}
-.o2{width:300px;height:300px;background:radial-gradient(circle,rgba(160,55,8,.1) 0%,transparent 70%);bottom:5%;left:-80px;animation-duration:15s;animation-delay:-7s}
-.o3{width:180px;height:180px;background:radial-gradient(circle,rgba(200,151,58,.1) 0%,transparent 70%);top:28%;right:6%;animation-duration:11s;animation-delay:-3s}
-@keyframes floatOrb{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-28px) scale(1.03)}}
-.chip{position:absolute;pointer-events:none;opacity:.16;animation:chipAnim ease-in-out infinite}
-@keyframes chipAnim{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-18px) rotate(12deg)}}
-.hc{position:relative;z-index:2;max-width:840px}
-.hero-pill{display:inline-flex;align-items:center;gap:9px;background:rgba(200,151,58,.09);border:1px solid rgba(200,151,58,.28);border-radius:100px;color:var(--gold2);font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;padding:7px 22px;margin-bottom:32px;font-family:'Tenor Sans',sans-serif;animation:pillGlow 3s ease-in-out infinite}
-@keyframes pillGlow{0%,100%{box-shadow:0 0 0 0 rgba(200,151,58,0)}50%{box-shadow:0 0 0 8px rgba(200,151,58,.05)}}
-.dot{width:6px;height:6px;background:var(--gold);border-radius:50%;animation:blink 2s infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
-.hero h2{font-family:'Bodoni Moda',serif;font-size:clamp(3.5rem,10vw,7.5rem);font-weight:900;line-height:.92;color:var(--cream);letter-spacing:-.02em;margin-bottom:8px}
-.hero h2 .shimmer{font-style:italic;background:linear-gradient(90deg,var(--gold) 0%,var(--gold3) 40%,var(--amber) 70%,var(--gold) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;background-size:250% 100%;animation:shimmer 5s linear infinite}
-@keyframes shimmer{0%{background-position:0% 50%}100%{background-position:250% 50%}}
-.hero-sub{font-family:'Tenor Sans',sans-serif;font-size:clamp(.9rem,2vw,1.12rem);color:rgba(253,246,237,.5);max-width:480px;margin:20px auto 46px;line-height:1.85;letter-spacing:.03em}
-.hero-btns{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
-.btn-p{background:linear-gradient(135deg,var(--gold) 0%,var(--amber) 100%);color:var(--ink);font-weight:700;font-size:.88rem;padding:16px 40px;border-radius:100px;border:none;cursor:none;letter-spacing:.07em;text-transform:uppercase;text-decoration:none;box-shadow:0 8px 32px rgba(200,151,58,.38),0 0 60px rgba(200,151,58,.08);transition:all .3s;display:inline-flex;align-items:center;gap:8px;font-family:'Outfit',sans-serif;position:relative;overflow:hidden}
-.btn-p::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.22),transparent);transition:left .5s}
-.btn-p:hover::before{left:100%}
-.btn-p:hover{transform:translateY(-3px);box-shadow:0 18px 44px rgba(200,151,58,.52)}
-.btn-g{background:transparent;color:var(--cream);border:1px solid rgba(253,246,237,.2);padding:15px 36px;border-radius:100px;cursor:none;font-size:.88rem;letter-spacing:.07em;text-transform:uppercase;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:all .3s;font-family:'Outfit',sans-serif}
-.btn-g:hover{border-color:var(--gold);color:var(--gold);background:rgba(200,151,58,.05)}
-.scroll-hint{position:absolute;bottom:34px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;color:rgba(253,246,237,.3);font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;font-family:'Tenor Sans',sans-serif;animation:scrollBob 2s ease-in-out infinite}
-.scroll-line{width:1px;height:52px;background:linear-gradient(180deg,var(--gold),transparent)}
-@keyframes scrollBob{0%,100%{opacity:.3;transform:translateX(-50%) translateY(0)}50%{opacity:.65;transform:translateX(-50%) translateY(7px)}}
+.hero{
+  position:relative;min-height:100svh;
+  display:flex;align-items:center;justify-content:center;overflow:hidden;
+}
+.hero-bg{
+  position:absolute;inset:0;
+  background-image:url('https://images.unsplash.com/photo-1481391243133-f96216dcb5d2?w=1600&q=85');
+  background-size:cover;background-position:center 30%;
+  opacity:0.2;animation:slowZoom 18s ease-in-out infinite alternate;
+}
+@keyframes slowZoom{from{transform:scale(1.03);}to{transform:scale(1.12);}}
+.hero-vignette{
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 60% at 50% 85%,rgba(13,9,6,0.97) 0%,transparent 70%),
+              radial-gradient(ellipse 50% 30% at 50% 0%,rgba(13,9,6,0.75) 0%,transparent 55%),
+              linear-gradient(180deg,rgba(13,9,6,0.35) 0%,rgba(13,9,6,0.15) 50%,rgba(13,9,6,0.85) 100%);
+}
+.hero-line{
+  position:absolute;top:50%;transform:translateY(-50%);
+  width:1px;height:38vh;
+  background:linear-gradient(180deg,transparent,rgba(200,151,42,0.35),transparent);
+}
+.hero-line.l{left:56px;} .hero-line.r{right:56px;}
+.hero-content{
+  position:relative;z-index:2;text-align:center;padding:0 28px;max-width:860px;
+}
+.hero-eyebrow{
+  font-size:0.64rem;font-weight:300;letter-spacing:0.55em;text-transform:uppercase;
+  color:var(--gold);display:flex;align-items:center;justify-content:center;gap:16px;
+  margin-bottom:38px;opacity:0;animation:fadeUp 1s 0.3s ease both;
+}
+.hero-eyebrow::before,.hero-eyebrow::after{
+  content:'';flex:1;max-width:64px;height:1px;
+}
+.hero-eyebrow::before{background:linear-gradient(90deg,transparent,var(--gold));}
+.hero-eyebrow::after{background:linear-gradient(90deg,var(--gold),transparent);}
+.hero-h1{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(3.8rem,9.5vw,8.5rem);font-weight:300;
+  line-height:0.92;letter-spacing:-0.015em;color:var(--ecru);
+  margin-bottom:30px;opacity:0;animation:fadeUp 1s 0.5s ease both;
+}
+.hero-h1 em{font-style:italic;color:var(--gold-light);}
+.hero-tag{
+  font-size:0.88rem;font-weight:200;letter-spacing:0.14em;
+  color:var(--text-muted);max-width:420px;margin:0 auto 52px;
+  line-height:2;opacity:0;animation:fadeUp 1s 0.7s ease both;
+}
+.hero-acts{
+  display:flex;align-items:center;justify-content:center;gap:28px;flex-wrap:wrap;
+  opacity:0;animation:fadeUp 1s 0.9s ease both;
+}
+.btn-p{
+  font-size:0.68rem;font-weight:400;letter-spacing:0.35em;text-transform:uppercase;
+  color:var(--obsidian);background:var(--gold);
+  padding:17px 44px;text-decoration:none;transition:var(--t);
+  display:inline-block;position:relative;overflow:hidden;
+}
+.btn-p::before{
+  content:'';position:absolute;inset:0;background:var(--gold-light);
+  transform:scaleX(0);transform-origin:left;transition:transform var(--t);
+}
+.btn-p:hover::before{transform:scaleX(1);}
+.btn-p:hover{box-shadow:0 0 48px rgba(200,151,42,0.38);}
+.btn-p span,.btn-g span{position:relative;z-index:1;}
+.btn-g{
+  font-size:0.68rem;font-weight:300;letter-spacing:0.32em;text-transform:uppercase;
+  color:var(--text-ecru);border-bottom:1px solid rgba(240,232,216,0.25);
+  padding-bottom:3px;text-decoration:none;transition:var(--t);
+}
+.btn-g:hover{color:var(--gold-light);border-color:var(--gold);}
+.hero-scroll{
+  position:absolute;bottom:40px;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+  opacity:0;animation:fadeUp 1s 1.1s ease both;
+}
+.hero-scroll span{font-size:0.58rem;letter-spacing:0.45em;text-transform:uppercase;color:var(--text-muted);}
+.scroll-line{
+  width:1px;height:54px;
+  background:linear-gradient(180deg,rgba(200,151,42,0.6),transparent);
+  animation:scPulse 2.2s ease-in-out infinite;
+}
+@keyframes scPulse{0%,100%{opacity:.35;transform:scaleY(1);}50%{opacity:1;transform:scaleY(1.15);}}
 
 /* ── MARQUEE ── */
-.mq-wrap{background:linear-gradient(90deg,var(--gold),var(--amber) 50%,var(--gold));padding:13px 0;overflow:hidden;position:relative;z-index:2}
-.mq-track{display:flex;white-space:nowrap;animation:mqScroll 24s linear infinite}
-@keyframes mqScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-.mq-item{display:inline-flex;align-items:center;gap:12px;padding:0 26px;font-family:'Tenor Sans',sans-serif;font-size:.74rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ink);font-weight:700;flex-shrink:0}
-.mq-sep{font-size:.9rem;opacity:.45}
+.marquee{background:var(--gold);padding:13px 0;overflow:hidden;}
+.mq-inner{
+  display:flex;white-space:nowrap;
+  animation:marquee 30s linear infinite;
+}
+.mq-inner span{
+  font-family:'Cormorant SC',serif;font-size:0.74rem;font-weight:400;
+  letter-spacing:0.22em;text-transform:uppercase;color:var(--obsidian);
+  padding:0 36px;flex-shrink:0;
+}
+.mq-inner .dot{color:rgba(44,26,14,0.55);padding:0;}
+@keyframes marquee{from{transform:translateX(0);}to{transform:translateX(-50%);}}
 
-/* ── STATS ── */
-.stats{background:var(--ink);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
-.stats-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr)}
-.stat{padding:54px 28px;text-align:center;border-right:1px solid var(--border);position:relative;overflow:hidden}
-.stat:last-child{border-right:none}
-.stat::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 100%,rgba(200,151,58,.05),transparent 70%);opacity:0;transition:opacity .4s}
-.stat:hover::before{opacity:1}
-.stat-n{font-family:'Bodoni Moda',serif;font-size:2.8rem;font-weight:900;background:linear-gradient(135deg,var(--gold),var(--gold3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;display:block;line-height:1;margin-bottom:8px}
-.stat-l{font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;color:rgba(253,246,237,.38);font-family:'Tenor Sans',sans-serif}
+/* ── SECTION BASE ── */
+section{padding:120px 56px;}
+.sl{
+  font-size:0.6rem;font-weight:300;letter-spacing:0.55em;text-transform:uppercase;
+  color:var(--gold);display:block;text-align:center;margin-bottom:20px;
+}
+.st{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(2.2rem,5vw,3.8rem);font-weight:300;
+  text-align:center;color:var(--ecru);line-height:1.1;margin-bottom:16px;
+}
+.st em{font-style:italic;color:var(--gold-light);}
+.sr{width:48px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:0 auto 18px;}
+.ss{
+  text-align:center;font-size:0.87rem;font-weight:300;
+  color:var(--text-muted);line-height:2;max-width:500px;margin:0 auto 70px;
+}
 
-/* ── SECTION COMMON ── */
-.sec{padding:110px 32px}
-.sec-lbl{display:flex;align-items:center;gap:12px;justify-content:center;margin-bottom:14px}
-.sec-lbl span{font-family:'Tenor Sans',sans-serif;font-size:.68rem;letter-spacing:.28em;text-transform:uppercase;color:var(--gold)}
-.ldec{width:38px;height:1px;background:linear-gradient(90deg,transparent,var(--gold))}
-.ldec.r{background:linear-gradient(90deg,var(--gold),transparent)}
-.sec-title{font-family:'Bodoni Moda',serif;font-size:clamp(2rem,4.8vw,3.6rem);font-weight:900;text-align:center;color:var(--cream);line-height:1.1;margin-bottom:14px;letter-spacing:-.01em}
-.sec-title em{font-style:italic;color:var(--gold)}
-.sec-sub{text-align:center;font-family:'Tenor Sans',sans-serif;font-size:.95rem;color:rgba(253,246,237,.42);max-width:460px;margin:0 auto 60px;line-height:1.85;letter-spacing:.02em}
-.container{max-width:1320px;margin:0 auto}
+/* ── PRODUCT GRID ── */
+#menu{background:var(--ink);position:relative;}
+#menu::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(200,151,42,0.2),transparent);
+}
+.pgrid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));
+  gap:2px;max-width:1380px;margin:0 auto;
+  border:1px solid rgba(200,151,42,0.1);
+  background:rgba(200,151,42,0.06);
+}
+.pcard{
+  position:relative;background:var(--espresso);overflow:hidden;
+  display:flex;flex-direction:column;transition:var(--t);cursor:none;
+}
+.pcard::after{
+  content:'';position:absolute;inset:0;
+  border:1px solid rgba(200,151,42,0);transition:border-color var(--t);
+  pointer-events:none;z-index:3;
+}
+.pcard:hover::after{border-color:rgba(200,151,42,0.4);}
+.pcard:hover{background:#221408;}
+.pimg-wrap{position:relative;height:255px;overflow:hidden;}
+.pimg-wrap img{
+  width:100%;height:100%;object-fit:cover;
+  filter:brightness(0.75) saturate(0.8);
+  transition:transform 0.7s ease,filter 0.7s ease;
+  display:block;
+}
+.pcard:hover .pimg-wrap img{transform:scale(1.08);filter:brightness(0.88) saturate(1);}
+.pimg-wrap::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(0deg,var(--espresso) 0%,transparent 55%);
+}
+.pbadge{
+  position:absolute;top:16px;right:16px;z-index:2;
+  font-size:0.58rem;font-weight:400;letter-spacing:0.26em;text-transform:uppercase;
+  color:var(--obsidian);background:var(--gold);padding:5px 13px;
+}
+.pbody{
+  padding:26px 26px 28px;flex:1;display:flex;flex-direction:column;
+  border-top:1px solid rgba(200,151,42,0.08);
+}
+.pcat{font-size:0.58rem;font-weight:300;letter-spacing:0.4em;text-transform:uppercase;color:var(--gold);margin-bottom:9px;}
+.pname{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.5rem;font-weight:400;color:var(--ecru);line-height:1.15;margin-bottom:13px;
+}
+.pdesc{font-size:0.81rem;font-weight:300;color:var(--text-muted);line-height:1.88;flex:1;margin-bottom:24px;}
+.pfooter{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.pprice{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.55rem;font-weight:400;color:var(--gold-light);line-height:1;
+}
+.pprice sub{font-size:0.85rem;font-family:'Jost';font-weight:200;color:var(--text-muted);}
+.btn-on{
+  font-family:'Jost',sans-serif;font-size:0.62rem;font-weight:400;
+  letter-spacing:0.28em;text-transform:uppercase;color:var(--ecru);
+  background:transparent;border:1px solid rgba(240,232,216,0.18);
+  padding:11px 20px;cursor:none;transition:var(--t);white-space:nowrap;
+}
+.btn-on:hover{background:var(--gold);color:var(--obsidian);border-color:var(--gold);}
 
-/* ── PRODUCTS ── */
-#menu{background:var(--deep);position:relative;overflow:hidden}
-#menu::before,#menu::after{content:'';position:absolute;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
-#menu::before{top:0}
-#menu::after{bottom:0}
-.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:2px;border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
-.pcard{background:var(--choc);position:relative;overflow:hidden;cursor:none;transition:background .4s cubic-bezier(.23,1,.32,1);display:flex;flex-direction:column}
-.pcard::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(200,151,58,.06),transparent 55%);opacity:0;transition:opacity .4s;z-index:1;pointer-events:none}
-.pcard:hover::after{opacity:1}
-.pcard:hover{background:#1f0c03}
-.cimg{width:100%;height:235px;overflow:hidden;position:relative;background:var(--mocha);flex-shrink:0}
-.cimg img{width:100%;height:100%;object-fit:cover;transition:transform .7s cubic-bezier(.23,1,.32,1),filter .4s;filter:brightness(.85) saturate(1.1)}
-.pcard:hover .cimg img{transform:scale(1.09);filter:brightness(1) saturate(1.25)}
-.cimg-ov{position:absolute;inset:0;background:linear-gradient(180deg,transparent 45%,rgba(15,5,0,.92) 100%)}
-.cimg-ov2{position:absolute;inset:0;background:rgba(15,5,0,.28);opacity:0;transition:opacity .4s}
-.pcard:hover .cimg-ov2{opacity:1}
-.cbadge-wrap{position:absolute;top:14px;left:14px;display:flex;gap:6px;z-index:3}
-.cbadge{font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 11px;border-radius:100px;font-family:'Outfit',sans-serif}
-.cb-best{background:var(--gold);color:var(--ink)}
-.cb-new{background:linear-gradient(135deg,#1a8c4e,#0d6e3b);color:#fff}
-.cb-ai{background:linear-gradient(135deg,#6d28d9,#a855f7);color:#fff}
-.cbody{padding:22px 26px 26px;flex:1;display:flex;flex-direction:column;position:relative;z-index:2}
-.ccat{font-size:.65rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);font-family:'Tenor Sans',sans-serif;margin-bottom:7px}
-.cname{font-family:'Bodoni Moda',serif;font-size:1.25rem;font-weight:700;color:var(--cream);margin-bottom:9px;line-height:1.2;transition:color .3s}
-.pcard:hover .cname{color:var(--gold2)}
-.cdesc{font-size:.82rem;color:rgba(253,246,237,.47);line-height:1.65;flex:1;margin-bottom:20px;transition:color .3s}
-.pcard:hover .cdesc{color:rgba(253,246,237,.63)}
-.cfoot{display:flex;align-items:center;justify-content:space-between}
-.cprice{font-family:'Bodoni Moda',serif;font-size:1.45rem;font-weight:700;color:var(--gold);letter-spacing:-.02em}
-.cprice sup{font-size:.85rem;vertical-align:super}
-.btn-order{background:transparent;border:1px solid var(--border2);color:var(--gold);padding:9px 20px;border-radius:100px;cursor:none;font-size:.78rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;transition:all .3s;font-family:'Outfit',sans-serif;position:relative;overflow:hidden}
-.btn-order::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--gold),var(--amber));opacity:0;transition:opacity .3s;border-radius:100px}
-.btn-order .ot{position:relative;z-index:1;transition:color .3s}
-.btn-order:hover::before{opacity:1}
-.btn-order:hover .ot{color:var(--ink)}
-.btn-order:hover{border-color:transparent;transform:scale(1.04)}
+/* ── FEATURED SPLIT ── */
+#featured{background:var(--espresso);padding:0;display:grid;grid-template-columns:1fr 1fr;min-height:580px;}
+.feat-vis{position:relative;overflow:hidden;}
+.feat-vis img{width:100%;height:100%;object-fit:cover;filter:brightness(0.7) saturate(0.75);transition:transform 0.9s ease;display:block;}
+#featured:hover .feat-vis img{transform:scale(1.04);}
+.feat-ov{position:absolute;inset:0;background:linear-gradient(90deg,transparent 55%,var(--espresso) 100%);}
+.feat-txt{display:flex;flex-direction:column;justify-content:center;padding:80px 72px;}
+.feat-txt .sl,.feat-txt .sr{text-align:left;margin-left:0;}
+.feat-txt .st{text-align:left;font-size:clamp(2rem,4vw,3rem);}
+.feat-txt .ss{text-align:left;margin:0 0 36px;}
+.feat-price{
+  font-family:'Cormorant Garamond',serif;font-size:2.3rem;font-weight:300;
+  color:var(--gold-light);margin-bottom:36px;
+}
 
 /* ── ABOUT ── */
-#about{background:var(--ink);position:relative;overflow:hidden}
-#about::before{content:'';position:absolute;top:40%;right:-180px;width:580px;height:580px;border-radius:50%;background:radial-gradient(circle,rgba(200,151,58,.035) 0%,transparent 70%);pointer-events:none}
-.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;max-width:1160px;margin:0 auto}
-.aimg-col{position:relative}
-.aimg-frame{border-radius:var(--r);overflow:hidden;position:relative;box-shadow:var(--shadow)}
-.aimg-frame::before{content:'';position:absolute;inset:0;z-index:1;background:linear-gradient(135deg,rgba(200,151,58,.1),transparent 50%,rgba(8,3,0,.45));pointer-events:none}
-.aimg-frame img{width:100%;height:500px;object-fit:cover;display:block;filter:saturate(1.1) brightness(.95)}
-.acorner{position:absolute;bottom:-18px;right:-18px;width:96px;height:96px;border-radius:var(--r);background:linear-gradient(135deg,var(--gold),var(--amber));display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;box-shadow:0 20px 50px rgba(200,151,58,.35);z-index:2}
-.acorner .an{font-family:'Bodoni Moda',serif;font-size:2rem;font-weight:900;color:var(--ink);line-height:1}
-.acorner .al{font-size:.58rem;font-weight:700;letter-spacing:.1em;color:var(--ink);text-transform:uppercase;margin-top:2px}
-.afloat{position:absolute;top:-16px;left:-16px;width:68px;height:68px;border-radius:50%;background:var(--choc);border:2px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:1.7rem;box-shadow:0 8px 30px rgba(0,0,0,.45);z-index:2;animation:floatOrb 6s ease-in-out infinite}
-.atext .sec-title,.atext .sec-sub{text-align:left}
-.atext .sec-sub{margin:0 0 34px}
-.atext .sec-lbl{justify-content:flex-start}
-.feat-list{display:flex;flex-direction:column;gap:16px}
-.feat{display:flex;align-items:flex-start;gap:15px;padding:16px 18px;background:var(--glass);border:1px solid var(--border);border-radius:var(--rs);transition:all .3s}
-.feat:hover{background:var(--glass2);border-color:var(--border2);transform:translateX(5px)}
-.ficon{width:40px;height:40px;border-radius:var(--rs);flex-shrink:0;background:linear-gradient(135deg,rgba(200,151,58,.18),rgba(200,151,58,.04));border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:1.05rem}
-.ftext strong{display:block;font-size:.88rem;color:var(--cream);font-weight:600;margin-bottom:3px}
-.ftext p{font-size:.78rem;color:rgba(253,246,237,.42);line-height:1.55}
+#about{background:var(--obsidian);}
+.about-grid{display:grid;grid-template-columns:1fr 1.1fr;gap:100px;max-width:1180px;margin:0 auto;align-items:center;}
+.a-vis{position:relative;}
+.a-img{width:100%;aspect-ratio:3/4;object-fit:cover;filter:brightness(0.72) saturate(0.65);display:block;position:relative;z-index:1;}
+.a-frame{position:absolute;top:22px;left:22px;right:-22px;bottom:-22px;border:1px solid rgba(200,151,42,0.22);z-index:0;}
+.a-txt .sl,.a-txt .sr{text-align:left;margin-left:0;}
+.a-txt .st{text-align:left;}
+.a-body{font-size:0.88rem;font-weight:300;color:var(--text-muted);line-height:2;margin-bottom:44px;}
+.a-body p+p{margin-top:14px;}
+.astats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;border:1px solid rgba(200,151,42,0.13);background:rgba(200,151,42,0.08);}
+.astat{background:var(--espresso);padding:26px 20px;text-align:center;}
+.astat .n{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;color:var(--gold-light);display:block;line-height:1;margin-bottom:7px;}
+.astat .l{font-size:0.6rem;font-weight:300;letter-spacing:0.28em;text-transform:uppercase;color:var(--text-muted);}
 
 /* ── TESTIMONIALS ── */
-#testi{background:var(--deep);position:relative;overflow:hidden}
-#testi::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:900px;height:900px;border-radius:50%;background:radial-gradient(circle,rgba(200,151,58,.025) 0%,transparent 70%);pointer-events:none}
-.tgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-.tcard{background:var(--choc);border:1px solid var(--border);border-radius:var(--r);padding:30px;transition:all .35s;position:relative;overflow:hidden}
-.tcard::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0;transition:opacity .3s}
-.tcard:hover::before{opacity:1}
-.tcard:hover{border-color:var(--border2);transform:translateY(-5px);box-shadow:0 24px 60px rgba(0,0,0,.35)}
-.tquote{font-size:3.8rem;line-height:.55;color:var(--gold);opacity:.22;font-family:'Bodoni Moda',serif;margin-bottom:10px}
-.tstars{color:var(--gold);font-size:.82rem;letter-spacing:3px;margin-bottom:16px}
-.ttext{font-family:'Tenor Sans',sans-serif;font-size:.9rem;color:rgba(253,246,237,.62);line-height:1.82;margin-bottom:22px;font-style:italic}
-.tauthor{display:flex;align-items:center;gap:13px}
-.tav{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--amber));display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--ink);font-size:.95rem;flex-shrink:0;font-family:'Bodoni Moda',serif}
-.tname{font-size:.86rem;font-weight:600;color:var(--cream)}
-.trole{font-size:.7rem;color:var(--gold);letter-spacing:.07em;margin-top:2px;font-family:'Tenor Sans',sans-serif}
-
-/* ── CTA ── */
-.cta{background:linear-gradient(135deg,var(--mocha) 0%,#220d03 50%,var(--mocha) 100%);padding:90px 32px;text-align:center;position:relative;overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
-.cta::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:700px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(200,151,58,.09) 0%,transparent 70%)}
-.cta h2{font-family:'Bodoni Moda',serif;font-size:clamp(1.9rem,5vw,3.4rem);font-weight:900;color:var(--cream);margin-bottom:12px;position:relative}
-.cta p{font-family:'Tenor Sans',sans-serif;font-size:.95rem;color:rgba(253,246,237,.47);margin-bottom:34px;max-width:400px;margin-left:auto;margin-right:auto;line-height:1.75;position:relative}
-.cta .btn-p{position:relative;font-size:.95rem;padding:17px 46px}
+#testimonials{background:var(--bark);position:relative;overflow:hidden;}
+#testimonials::before{
+  content:'';position:absolute;top:-100px;left:50%;transform:translateX(-50%);
+  width:700px;height:700px;border-radius:50%;
+  background:radial-gradient(circle,rgba(200,151,42,0.05) 0%,transparent 70%);pointer-events:none;
+}
+.tgrid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+  gap:1px;max-width:1200px;margin:0 auto;
+  background:rgba(200,151,42,0.07);border:1px solid rgba(200,151,42,0.09);
+}
+.tcard{background:rgba(30,18,8,0.88);padding:40px 34px;transition:var(--t);}
+.tcard:hover{background:rgba(40,24,11,0.97);}
+.tstars{display:flex;gap:3px;margin-bottom:20px;}
+.tstars span{font-size:0.72rem;color:var(--gold);}
+.tquote{
+  font-family:'Cormorant Garamond',serif;font-size:1.08rem;font-weight:300;
+  font-style:italic;color:var(--text-ecru);line-height:1.78;margin-bottom:26px;
+}
+.tauth{display:flex;align-items:center;gap:13px;border-top:1px solid rgba(200,151,42,0.1);padding-top:20px;}
+.tavatar{
+  width:40px;height:40px;border-radius:50%;background:rgba(200,151,42,0.12);
+  border:1px solid rgba(200,151,42,0.22);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;
+}
+.tname{font-size:0.77rem;font-weight:500;letter-spacing:0.08em;color:var(--ecru);}
+.tloc{font-size:0.68rem;font-weight:300;color:var(--text-muted);margin-top:3px;}
 
 /* ── FOOTER ── */
-footer{background:var(--ink);padding:60px 32px 34px;border-top:1px solid var(--border)}
-.fgrid{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr;gap:56px;margin-bottom:50px}
-.fbrand p{font-size:.82rem;color:rgba(253,246,237,.38);line-height:1.75;margin-top:16px;max-width:280px;font-family:'Tenor Sans',sans-serif}
-.flinks{margin-top:18px;display:flex;flex-direction:column;gap:9px}
-.flinks a{display:flex;align-items:center;gap:8px;color:rgba(253,246,237,.5);font-size:.8rem;text-decoration:none;transition:color .25s}
-.flinks a:hover{color:var(--gold)}
-.fcol h4{font-family:'Tenor Sans',sans-serif;font-size:.67rem;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);margin-bottom:18px}
-.fcol ul{list-style:none;display:flex;flex-direction:column;gap:9px}
-.fcol ul li a{color:rgba(253,246,237,.42);font-size:.8rem;text-decoration:none;transition:color .25s}
-.fcol ul li a:hover{color:var(--gold2)}
-.fbot{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding-top:26px;border-top:1px solid var(--border);flex-wrap:wrap;gap:12px}
-.fbot p{font-size:.73rem;color:rgba(253,246,237,.22);letter-spacing:.04em}
+footer{background:var(--obsidian);border-top:1px solid rgba(200,151,42,0.1);padding:72px 56px 48px;}
+.fgrid{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:60px;max-width:1100px;margin:0 auto 56px;}
+.fbrand .logo-mark{font-size:1.5rem;display:block;margin-bottom:5px;}
+.fbrand .logo-sub{display:block;margin-bottom:18px;}
+.fabout{font-size:0.81rem;font-weight:300;color:var(--text-muted);line-height:1.95;max-width:290px;}
+.fcol h4{
+  font-family:'Cormorant SC',serif;font-size:0.72rem;font-weight:600;
+  letter-spacing:0.3em;text-transform:uppercase;color:var(--gold);margin-bottom:18px;
+}
+.fcol a,.fcol p{
+  display:block;font-size:0.8rem;font-weight:300;color:var(--text-muted);
+  text-decoration:none;line-height:1;margin-bottom:11px;letter-spacing:0.04em;transition:color var(--t);
+}
+.fcol a:hover{color:var(--gold-light);}
+.fbot{
+  border-top:1px solid rgba(200,151,42,0.09);padding-top:30px;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;
+  max-width:1100px;margin:0 auto;
+}
+.fcopy{font-size:0.7rem;font-weight:300;letter-spacing:0.14em;color:var(--text-muted);}
+.ftag{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:0.88rem;color:rgba(200,151,42,0.45);}
 
-/* ── MODAL ── */
-.overlay{position:fixed;inset:0;z-index:1200;background:rgba(4,1,0,.88);backdrop-filter:blur(14px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .3s}
-.overlay.open{opacity:1;pointer-events:all}
-.modal{background:var(--choc);border:1px solid var(--border);border-radius:22px;width:100%;max-width:496px;max-height:94vh;overflow-y:auto;transform:translateY(28px) scale(.96);transition:transform .35s cubic-bezier(.23,1,.32,1);box-shadow:var(--shadow),0 0 100px rgba(200,151,58,.07);position:relative}
-.overlay.open .modal{transform:translateY(0) scale(1)}
-.modal::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);border-radius:22px 22px 0 0}
-.mhead{padding:30px 30px 22px;background:linear-gradient(135deg,var(--mocha),var(--choc));border-radius:22px 22px 0 0;position:relative}
-.mclose{position:absolute;top:18px;right:18px;background:rgba(255,255,255,.05);border:1px solid var(--border);color:rgba(253,246,237,.55);width:34px;height:34px;border-radius:50%;cursor:none;font-size:.95rem;display:flex;align-items:center;justify-content:center;transition:all .2s}
-.mclose:hover{background:rgba(200,151,58,.15);color:var(--gold);border-color:var(--border2)}
-.mhead h3{font-family:'Bodoni Moda',serif;font-size:1.45rem;font-weight:900;color:var(--cream)}
-.mhead p{font-size:.8rem;color:rgba(253,246,237,.4);margin-top:5px;font-family:'Tenor Sans',sans-serif}
-.mprod{padding:14px 30px;background:rgba(255,253,249,.03);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:13px}
-.pem{font-size:1.5rem}
-.pn{font-family:'Bodoni Moda',serif;font-size:.97rem;font-weight:700;color:var(--cream)}
-.pp{font-size:.88rem;color:var(--gold);font-weight:600;margin-top:2px}
-.mform{padding:26px 30px}
-.fg{margin-bottom:18px}
-.fg label{display:block;font-size:.7rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:rgba(253,246,237,.4);margin-bottom:7px;font-family:'Tenor Sans',sans-serif}
-.fg input,.fg textarea{width:100%;background:rgba(255,253,249,.04);border:1px solid var(--border);border-radius:var(--rs);padding:12px 15px;color:var(--cream);font-family:'Outfit',sans-serif;font-size:.9rem;outline:none;transition:all .25s}
-.fg input:focus,.fg textarea:focus{border-color:var(--gold);background:rgba(200,151,58,.05);box-shadow:0 0 0 3px rgba(200,151,58,.09)}
-.fg input::placeholder,.fg textarea::placeholder{color:rgba(253,246,237,.18)}
-.fg textarea{resize:vertical;min-height:80px}
-.btn-place{width:100%;background:linear-gradient(135deg,var(--gold),var(--amber));color:var(--ink);border:none;border-radius:100px;padding:15px;font-size:.9rem;font-weight:700;cursor:none;letter-spacing:.06em;text-transform:uppercase;transition:all .3s;font-family:'Outfit',sans-serif;margin-top:4px;position:relative;overflow:hidden}
-.btn-place::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent);transition:left .5s}
-.btn-place:hover::before{left:100%}
-.btn-place:hover{box-shadow:0 8px 30px rgba(200,151,58,.45);transform:translateY(-1px)}
-.fnote{font-size:.7rem;color:rgba(253,246,237,.25);text-align:center;margin-top:11px;line-height:1.6;font-family:'Tenor Sans',sans-serif}
-/* confirm */
-.conf{padding:38px 30px;text-align:center;display:none}
-.conf.active{display:block}
-.ci{font-size:3.8rem;margin-bottom:16px;animation:cpop .5s cubic-bezier(.23,1,.32,1)}
-@keyframes cpop{from{transform:scale(0)}to{transform:scale(1)}}
-.conf h3{font-family:'Bodoni Moda',serif;font-size:1.55rem;font-weight:900;color:var(--cream);margin-bottom:9px}
-.conf p{font-size:.85rem;color:rgba(253,246,237,.47);line-height:1.7;margin-bottom:5px;font-family:'Tenor Sans',sans-serif}
-.trackbox{display:inline-flex;flex-direction:column;align-items:center;background:rgba(200,151,58,.06);border:1px solid var(--border2);border-radius:var(--rs);padding:15px 26px;margin:16px 0 12px}
-.tl{font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(253,246,237,.38);font-family:'Tenor Sans',sans-serif;margin-bottom:5px}
-.ti{font-family:'Bodoni Moda',serif;font-size:1.25rem;font-weight:700;color:var(--gold)}
-.cc{background:rgba(255,253,249,.03);border:1px solid var(--border);border-radius:var(--rs);padding:13px 18px;font-size:.8rem;color:rgba(253,246,237,.46);line-height:1.75;margin:12px 0 22px;font-family:'Tenor Sans',sans-serif}
-.cc strong{color:var(--gold2)}
-.cbtns{display:flex;flex-direction:column;gap:11px}
-.btn-wa{display:flex;align-items:center;justify-content:center;gap:9px;background:#25d366;color:#fff;border:none;border-radius:100px;padding:14px 26px;font-size:.86rem;font-weight:700;cursor:none;text-decoration:none;transition:all .3s;font-family:'Outfit',sans-serif;letter-spacing:.04em}
-.btn-wa:hover{background:#1ab755;transform:translateY(-2px);box-shadow:0 8px 26px rgba(37,211,102,.32)}
-.btn-wao{display:flex;align-items:center;justify-content:center;gap:9px;background:rgba(255,255,255,.04);color:rgba(253,246,237,.55);border:1px solid var(--border);border-radius:100px;padding:11px 22px;font-size:.8rem;font-weight:600;cursor:none;text-decoration:none;transition:all .3s;font-family:'Outfit',sans-serif}
-.btn-wao:hover{border-color:#25d366;color:#25d366;background:rgba(37,211,102,.05)}
-.onote{font-size:.68rem;color:rgba(253,246,237,.22);margin-top:4px;font-style:italic;font-family:'Tenor Sans',sans-serif}
-.btn-dis{background:none;border:none;color:rgba(253,246,237,.28);font-size:.8rem;cursor:none;text-decoration:underline;margin-top:6px;font-family:'Outfit',sans-serif;transition:color .2s}
-.btn-dis:hover{color:var(--gold)}
+/* ── SCROLL TOP ── */
+#stb{
+  position:fixed;bottom:34px;right:34px;z-index:400;
+  width:48px;height:48px;background:transparent;
+  border:1px solid rgba(200,151,42,0.3);color:var(--gold);
+  font-size:0.9rem;cursor:none;transition:var(--t);display:none;
+  align-items:center;justify-content:center;
+}
+#stb.v{display:flex;}
+#stb:hover{background:var(--gold);color:var(--obsidian);}
 
-/* TOAST */
-.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(65px);background:var(--choc);border:1px solid var(--border2);color:var(--cream);padding:13px 28px;border-radius:100px;font-size:.85rem;box-shadow:0 8px 36px rgba(0,0,0,.45),var(--glow);z-index:9990;opacity:0;transition:all .4s cubic-bezier(.23,1,.32,1);white-space:nowrap;font-family:'Outfit',sans-serif;letter-spacing:.02em}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+/* ── OVERLAY ── */
+.ov{
+  display:none;position:fixed;inset:0;
+  background:rgba(5,3,2,0.9);backdrop-filter:blur(12px);
+  z-index:600;align-items:center;justify-content:center;padding:20px;
+}
+.ov.open{display:flex;}
 
-/* REVEAL */
-.reveal{opacity:0;transform:translateY(34px);transition:opacity .65s cubic-bezier(.23,1,.32,1),transform .65s cubic-bezier(.23,1,.32,1)}
-.reveal.up{opacity:1;transform:translateY(0)}
+/* ── ORDER MODAL ── */
+.modal{
+  background:var(--espresso);border:1px solid rgba(200,151,42,0.18);
+  width:100%;max-width:500px;max-height:90svh;overflow-y:auto;
+  position:relative;animation:mIn 0.4s ease both;
+}
+@keyframes mIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+.mhdr{padding:34px 34px 0;border-bottom:1px solid rgba(200,151,42,0.1);padding-bottom:26px;margin-bottom:26px;}
+.mclose{
+  position:absolute;top:18px;right:20px;background:none;border:none;
+  font-size:1rem;color:var(--text-muted);cursor:none;transition:color var(--t);line-height:1;
+}
+.mclose:hover{color:var(--ecru);}
+.mpstrip{
+  display:flex;align-items:center;gap:13px;
+  background:rgba(200,151,42,0.06);border:1px solid rgba(200,151,42,0.13);
+  padding:15px 18px;margin-bottom:26px;
+}
+.me{font-size:1.9rem;line-height:1;}
+.mpn{font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:400;color:var(--ecru);}
+.mpp{font-size:0.8rem;font-weight:300;color:var(--gold);letter-spacing:0.07em;margin-top:3px;}
+.modal h3{font-family:'Cormorant Garamond',serif;font-size:1.65rem;font-weight:300;color:var(--ecru);margin-bottom:4px;}
+.mnt{font-size:0.72rem;font-weight:300;letter-spacing:0.1em;color:var(--text-muted);}
+.mbdy{padding:0 34px 34px;}
+.fg{margin-bottom:18px;}
+.fg label{
+  display:block;font-size:0.58rem;font-weight:400;letter-spacing:0.42em;
+  text-transform:uppercase;color:var(--gold);margin-bottom:8px;
+}
+.fg input,.fg textarea{
+  width:100%;background:rgba(255,255,255,0.035);
+  border:1px solid rgba(200,151,42,0.16);padding:13px 15px;
+  font-family:'Jost';font-size:0.88rem;font-weight:300;color:var(--ecru);outline:none;
+  transition:border-color var(--t),background var(--t);
+}
+.fg input:focus,.fg textarea:focus{border-color:rgba(200,151,42,0.5);background:rgba(255,255,255,0.055);}
+.fg input::placeholder,.fg textarea::placeholder{color:rgba(160,128,96,0.45);}
+.fg textarea{resize:vertical;min-height:90px;}
+.btn-so{
+  width:100%;font-family:'Jost';font-size:0.68rem;font-weight:400;
+  letter-spacing:0.33em;text-transform:uppercase;color:var(--obsidian);background:var(--gold);
+  border:none;padding:17px;cursor:none;transition:var(--t);
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  margin-top:6px;position:relative;overflow:hidden;
+}
+.btn-so::before{
+  content:'';position:absolute;inset:0;background:var(--gold-light);
+  transform:scaleX(0);transform-origin:left;transition:transform var(--t);
+}
+.btn-so:hover::before{transform:scaleX(1);}
+.btn-so span{position:relative;z-index:1;}
+
+/* ── CONFIRM MODAL ── */
+.cmodal{
+  background:var(--espresso);border:1px solid rgba(200,151,42,0.18);
+  width:100%;max-width:560px;max-height:92svh;overflow-y:auto;
+  position:relative;animation:mIn 0.4s ease both;
+}
+.ctop{
+  background:linear-gradient(135deg,var(--mahogany),var(--bark));
+  border-bottom:1px solid rgba(200,151,42,0.18);padding:42px 40px 34px;text-align:center;
+}
+.ccheck{
+  width:68px;height:68px;border:1px solid rgba(200,151,42,0.45);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:1.7rem;
+  margin:0 auto 18px;background:rgba(200,151,42,0.09);
+}
+.ctop h3{font-family:'Cormorant Garamond',serif;font-size:1.75rem;font-weight:300;color:var(--ecru);margin-bottom:5px;}
+.ctop p{font-size:0.78rem;font-weight:300;letter-spacing:0.1em;color:var(--text-muted);}
+.cbdy{padding:30px 40px 38px;}
+.tbox{
+  background:rgba(200,151,42,0.07);border:1px solid rgba(200,151,42,0.22);
+  padding:20px 24px;text-align:center;margin-bottom:20px;
+}
+.tlbl{font-size:0.58rem;letter-spacing:0.4em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:7px;}
+.tnum{font-family:'Cormorant Garamond',serif;font-size:1.55rem;font-weight:400;color:var(--ecru);display:block;}
+.tsub{font-size:0.7rem;color:var(--text-muted);margin-top:4px;}
+.irow{display:flex;gap:12px;margin-bottom:9px;font-size:0.81rem;font-weight:300;color:var(--text-muted);align-items:flex-start;line-height:1.55;}
+.irow .ii{color:var(--gold);flex-shrink:0;width:18px;text-align:center;}
+.irow strong{color:var(--ecru);font-weight:400;}
+.owner-sec{margin-top:26px;border-top:1px solid rgba(200,151,42,0.1);padding-top:26px;}
+.owner-sec h4{
+  font-family:'Cormorant SC',serif;font-size:0.72rem;font-weight:600;
+  letter-spacing:0.3em;text-transform:uppercase;color:var(--gold);margin-bottom:5px;
+}
+.owner-sec p{font-size:0.73rem;font-weight:300;color:var(--text-muted);margin-bottom:14px;letter-spacing:0.04em;}
+.omsg{
+  background:rgba(255,255,255,0.025);border:1px solid rgba(200,151,42,0.1);
+  padding:14px 16px;font-size:0.79rem;font-weight:300;color:var(--text-ecru);
+  line-height:1.82;white-space:pre-line;word-break:break-word;
+  margin-bottom:14px;max-height:175px;overflow-y:auto;
+}
+.btn-wa{
+  display:flex;align-items:center;justify-content:center;gap:10px;width:100%;
+  font-family:'Jost';font-size:0.68rem;font-weight:400;letter-spacing:0.28em;text-transform:uppercase;
+  color:#fff;background:linear-gradient(135deg,#25d366,#128c7e);
+  border:none;padding:15px;text-decoration:none;cursor:none;
+  transition:var(--t);margin-bottom:10px;
+}
+.btn-wa:hover{opacity:0.9;transform:translateY(-1px);box-shadow:0 8px 28px rgba(37,211,102,0.22);}
+.btn-dis{
+  width:100%;font-family:'Jost';font-size:0.66rem;font-weight:300;
+  letter-spacing:0.3em;text-transform:uppercase;color:var(--text-muted);
+  background:none;border:1px solid rgba(200,151,42,0.13);padding:12px;cursor:none;transition:var(--t);
+}
+.btn-dis:hover{border-color:rgba(200,151,42,0.38);color:var(--ecru);}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(26px);}to{opacity:1;transform:translateY(0);}}
+.reveal{opacity:0;transform:translateY(28px);transition:opacity 0.85s ease,transform 0.85s ease;}
+.reveal.vis{opacity:1;transform:translateY(0);}
 
 /* ── RESPONSIVE ── */
-@media(max-width:1060px){
-  .stats-inner{grid-template-columns:repeat(2,1fr)}
-  .stat:nth-child(2){border-right:none}
-  .stat:nth-child(3){border-top:1px solid var(--border)}
-  .tgrid{grid-template-columns:repeat(2,1fr)}
-  .fgrid{grid-template-columns:1fr 1fr}
-  .fbrand{grid-column:1/-1}
-}
-@media(max-width:860px){
-  header{padding:0 20px}
-  nav{display:none;position:fixed;top:74px;left:0;right:0;background:rgba(8,3,0,.97);backdrop-filter:blur(20px);flex-direction:column;padding:18px;gap:4px;border-bottom:1px solid var(--border)}
-  nav.open{display:flex}
-  .ham{display:flex}
-  .about-grid{grid-template-columns:1fr;gap:46px}
-  .aimg-frame img{height:300px}
-  .pgrid{grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
+@media(max-width:980px){
+  .hbar,.hbar.scrolled{padding:18px 28px;}
+  nav{gap:22px;}
+  section{padding:90px 28px;}
+  #featured{grid-template-columns:1fr;}
+  .feat-vis{height:340px;}
+  .feat-ov{background:linear-gradient(0deg,var(--espresso) 0%,transparent 60%);}
+  .feat-txt{padding:50px 40px;}
+  .about-grid{grid-template-columns:1fr;gap:50px;}
+  .fgrid{grid-template-columns:1fr 1fr;gap:40px;}
+  .hero-line{display:none;}
 }
 @media(max-width:640px){
-  .sec{padding:70px 18px}
-  .tgrid{grid-template-columns:1fr}
-  .fgrid{grid-template-columns:1fr}
-  .fbot{flex-direction:column;text-align:center}
-  .mform,.mhead,.conf{padding:20px 18px}
-  .mprod{padding:13px 18px}
-  body{cursor:auto}
-  #cur,#cur-ring{display:none}
-  .btn-p,.btn-g,.btn-order,.btn-place,.btn-wa,.btn-wao,.btn-dis,.mclose,.ham{cursor:pointer}
-}
-@media(max-width:440px){
-  .pgrid{grid-template-columns:1fr}
-  .stats-inner{grid-template-columns:repeat(2,1fr)}
+  .hbar,.hbar.scrolled{padding:15px 20px;}
+  nav{display:none;}
+  section{padding:72px 20px;}
+  .pgrid{grid-template-columns:1fr;}
+  .astats{grid-template-columns:1fr 1fr;}
+  .fgrid{grid-template-columns:1fr;}
+  .fbot{flex-direction:column;text-align:center;}
+  .mhdr{padding:26px 22px 0;padding-bottom:20px;}
+  .mbdy{padding:0 22px 26px;}
+  .ctop{padding:32px 24px;}
+  .cbdy{padding:24px 24px 30px;}
+  .feat-txt{padding:38px 24px;}
 }
 </style>
 </head>
 <body>
-<div id="cur"></div>
-<div id="cur-ring"></div>
-<div id="grain"></div>
+
+<div id="cursor"></div>
+<div id="cursor-follower"></div>
 
 <!-- HEADER -->
-<header id="hdr">
-  <a href="#" class="logo">
-    <div class="logo-mark">🍫</div>
-    <div class="logo-text">
-      <h1>Cocoa Blisss</h1>
-      <span>From Vaibhavi · Est. 2016</span>
-    </div>
-  </a>
-  <button class="ham" onclick="toggleNav()" aria-label="Menu"><span></span><span></span><span></span></button>
-  <nav id="mnav">
-    <a href="#menu">Menu</a>
-    <a href="#about">Story</a>
-    <a href="#testi">Reviews</a>
-    <a href="#menu" class="nav-cta">Order Now</a>
-  </nav>
+<header>
+  <div class="hbar" id="hb">
+    <a href="#" class="logo">
+      <span class="logo-mark">Cocoa Bliss</span>
+      <span class="logo-sub">Maison du Chocolat</span>
+    </a>
+    <nav>
+      <a href="#menu">Collection</a>
+      <a href="#featured">Signature</a>
+      <a href="#about">Atelier</a>
+      <a href="#testimonials">Clients</a>
+    </nav>
+    <a href="#menu" class="h-cta">Order Now</a>
+  </div>
 </header>
 
 <!-- HERO -->
-<section class="hero" id="home">
+<section class="hero">
   <div class="hero-bg"></div>
-  <div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
-  <span class="chip" style="top:17%;left:5%;font-size:2rem;animation-duration:7.5s">🍫</span>
-  <span class="chip" style="top:70%;left:4%;font-size:1.4rem;animation-duration:9s;animation-delay:-3s">✨</span>
-  <span class="chip" style="top:22%;right:6%;font-size:2rem;animation-duration:8s;animation-delay:-1.5s">🎂</span>
-  <span class="chip" style="top:65%;right:8%;font-size:1.5rem;animation-duration:6.5s;animation-delay:-2.5s">🍨</span>
-  <span class="chip" style="top:44%;left:2.5%;font-size:1.2rem;animation-duration:11s;animation-delay:-4s">⭐</span>
-  <div class="hc">
-    <div class="hero-pill"><span class="dot"></span>Premium Belgian-Style Chocolatier</div>
-    <h2>
-      <span style="display:block">Pure</span>
-      <span class="shimmer" style="display:block">Chocolate</span>
-      <span style="display:block">Bliss.</span>
-    </h2>
-    <p class="hero-sub">Handcrafted chocolate desserts made with single-origin cocoa — delivered warm to your door in 20 minutes.</p>
-    <div class="hero-btns">
-      <a href="#menu" class="btn-p">✦ &nbsp;Explore Menu</a>
-      <a href="#about" class="btn-g">Our Story →</a>
+  <div class="hero-vignette"></div>
+  <div class="hero-line l"></div>
+  <div class="hero-line r"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">✦ &nbsp; Handcrafted in Mumbai Since 2018 &nbsp; ✦</div>
+    <h1 class="hero-h1">The Art of<br/><em>Pure Chocolate</em></h1>
+    <p class="hero-tag">Where Belgian cacao meets Parisian precision.<br/>Every creation — a moment of quiet luxury.</p>
+    <div class="hero-acts">
+      <a href="#menu" class="btn-p"><span>Explore Collection</span></a>
+      <a href="#about" class="btn-g"><span>Our Atelier →</span></a>
     </div>
   </div>
-  <div class="scroll-hint"><div class="scroll-line"></div><span>Scroll</span></div>
+  <div class="hero-scroll"><span>Scroll</span><div class="scroll-line"></div></div>
 </section>
 
 <!-- MARQUEE -->
-<div class="mq-wrap" aria-hidden="true"><div class="mq-track" id="mq-track"></div></div>
-
-<!-- STATS -->
-<div class="stats">
-  <div class="stats-inner">
-    <div class="stat reveal"><span class="stat-n">12+</span><span class="stat-l">Signature Items</span></div>
-    <div class="stat reveal"><span class="stat-n">5K+</span><span class="stat-l">Happy Customers</span></div>
-    <div class="stat reveal"><span class="stat-n">8</span><span class="stat-l">Years of Craft</span></div>
-    <div class="stat reveal"><span class="stat-n">100%</span><span class="stat-l">Premium Cocoa</span></div>
-  </div>
-</div>
+<div class="marquee"><div class="mq-inner" id="mq"></div></div>
 
 <!-- PRODUCTS -->
-<section class="sec" id="menu">
-  <div class="container">
-    <div class="sec-lbl"><div class="ldec"></div><span>The Belge Collection</span><div class="ldec r"></div></div>
-    <h2 class="sec-title">Crafted With <em>Obsession</em></h2>
-    <p class="sec-sub">Every item made to order with single-origin Belgian cocoa and a whole lot of love.</p>
-    <div class="pgrid" id="pgrid"></div>
+<section id="menu">
+  <span class="sl reveal">The Collection</span>
+  <h2 class="st reveal">Crafted <em>Daily</em>, by Hand</h2>
+  <div class="sr reveal"></div>
+  <p class="ss reveal">Twelve expressions of pure cacao mastery — from velvet cakes to AI-architected confections, each born in our Mumbai atelier.</p>
+  <div class="pgrid" id="pgrid"></div>
+</section>
+
+<!-- FEATURED -->
+<section id="featured">
+  <div class="feat-vis">
+    <img src="https://images.unsplash.com/photo-1488477181946-6428a0291777?w=900&q=85" alt="NeuroChoco Delight" loading="lazy"/>
+    <div class="feat-ov"></div>
+  </div>
+  <div class="feat-txt">
+    <span class="sl">Signature Creation</span>
+    <h2 class="st">NeuroChoco<br/><em>Delight</em></h2>
+    <div class="sr" style="margin:0 0 18px;"></div>
+    <p class="ss" style="text-align:left;margin:0 0 36px;">Our most ambitious work — an AI-designed chocolate dome where espresso, dark, milk, and white chocolate converge in dynamic layered harmony. Finished with a hand-painted neural pattern in gold leaf.</p>
+    <div class="feat-price">₹899 <sub style="font-family:'Jost';font-size:0.8rem;color:var(--text-muted);font-weight:200;">per serving</sub></div>
+    <button class="btn-p" onclick='openModal({id:"feat",name:"NeuroChoco Delight",category:"AI Cake",emoji:"🤖",price:899})'><span>Order This Creation</span></button>
   </div>
 </section>
 
 <!-- ABOUT -->
-<section class="sec" id="about">
+<section id="about">
   <div class="about-grid">
-    <div class="aimg-col reveal">
-      <div class="afloat">🍫</div>
-      <div class="aimg-frame">
-        <img src="https://images.unsplash.com/photo-1606312619070-d48b4c652a52?w=900&q=85" alt="Chocolate crafting at Cocoa Blisss"/>
-      </div>
-      <div class="acorner"><span class="an">8</span><span class="al">Years of Craft</span></div>
+    <div class="a-vis reveal">
+      <div class="a-frame"></div>
+      <img class="a-img" src="https://images.unsplash.com/photo-1511381939415-e44f5f1f4f7a?w=700&q=80" alt="Cocoa Bliss Atelier" loading="lazy"/>
     </div>
-    <div class="atext reveal">
-      <div class="sec-lbl" style="justify-content:flex-start"><div class="ldec"></div><span>Our Story</span></div>
-      <h2 class="sec-title" style="text-align:left">Born From a<br><em>Passion</em> for Chocolate</h2>
-      <p class="sec-sub" style="text-align:left;margin:0 0 32px">A Belgian-trained chocolatier dreaming of bringing world-class chocolate desserts to every doorstep in Mumbai.</p>
-      <div class="feat-list">
-        <div class="feat"><div class="ficon">🌱</div><div class="ftext"><strong>Ethically Sourced</strong><p>Direct-trade cacao from Ghana, Ecuador and Vietnam — fair to farmers, extraordinary in flavour.</p></div></div>
-        <div class="feat"><div class="ficon">🤝</div><div class="ftext"><strong>Made to Order</strong><p>Nothing sits in a case. Your order is crafted fresh the moment you click Order Now.</p></div></div>
-        <div class="feat"><div class="ficon">🚀</div><div class="ftext"><strong>20-Minute Delivery</strong><p>Our micro-kitchen network means your warm creation arrives within 20 minutes, every time.</p></div></div>
-        <div class="feat"><div class="ficon">🤖</div><div class="ftext"><strong>AI-Powered Creations</strong><p>Our NeuroChoco line uses flavour-pairing algorithms to craft combinations you've never imagined.</p></div></div>
+    <div class="a-txt reveal">
+      <span class="sl">Our Atelier</span>
+      <h2 class="st" style="text-align:left;margin-bottom:14px;">Born from a<br/>Devotion to <em>Cacao</em></h2>
+      <div class="sr" style="margin:0 0 22px;"></div>
+      <div class="a-body">
+        <p>Cocoa Bliss was founded in 2018 by pastry chef Priya Sharma, trained at Le Cordon Bleu Paris and Valrhona's École du Grand Chocolat. Her dream: to bring the quiet luxury of a Parisian chocolatier to Mumbai's streets.</p>
+        <p>We source only single-origin cacao — Ecuadorian Arriba Nacional for dark, Belgian Callebaut for milk, and Peruvian Chuncho for our signature blends. Every creation is hand-tempered, hand-finished, and made to order.</p>
+        <p>Our AI-inspired dessert line bridges culinary tradition with computational creativity — flavour profiles designed through machine learning, executed entirely by human hands.</p>
+      </div>
+      <div class="astats">
+        <div class="astat"><span class="n">6+</span><span class="l">Years Crafting</span></div>
+        <div class="astat"><span class="n">12K</span><span class="l">Orders Fulfilled</span></div>
+        <div class="astat"><span class="n">100%</span><span class="l">Pure Cacao</span></div>
       </div>
     </div>
   </div>
 </section>
 
 <!-- TESTIMONIALS -->
-<section class="sec" id="testi">
-  <div class="container">
-    <div class="sec-lbl"><div class="ldec"></div><span>Loved by Chocoholics</span><div class="ldec r"></div></div>
-    <h2 class="sec-title">What People <em>Say</em></h2>
-    <p class="sec-sub">Real words from real customers who couldn't resist ordering again.</p>
-    <div class="tgrid" id="tgrid"></div>
+<section id="testimonials">
+  <span class="sl reveal">Connoisseur Voices</span>
+  <h2 class="st reveal">What Our <em>Clients</em> Say</h2>
+  <div class="sr reveal"></div>
+  <p class="ss reveal">Experiences shared by those who have tasted our work.</p>
+  <div class="tgrid">
+    <div class="tcard reveal">
+      <div class="tstars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+      <p class="tquote">"The Fudge Royale Cake was the most profoundly indulgent thing I have experienced. It disappeared in ten minutes at my daughter's birthday."</p>
+      <div class="tauth"><div class="tavatar">👩</div><div><div class="tname">Ananya Mehta</div><div class="tloc">Bandra, Mumbai</div></div></div>
+    </div>
+    <div class="tcard reveal">
+      <div class="tstars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+      <p class="tquote">"NeuroChoco Delight is unlike anything I have tasted. Creative, architecturally beautiful, and devastatingly rich. Delivered with such care."</p>
+      <div class="tauth"><div class="tavatar">👨</div><div><div class="tname">Rohan Kapoor</div><div class="tloc">Powai, Mumbai</div></div></div>
+    </div>
+    <div class="tcard reveal">
+      <div class="tstars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+      <p class="tquote">"Death By Chocolate lived up to every syllable of its name. The packaging alone felt like a luxury gift. Absolutely divine."</p>
+      <div class="tauth"><div class="tavatar">👩</div><div><div class="tname">Sneha Joshi</div><div class="tloc">Juhu, Mumbai</div></div></div>
+    </div>
+    <div class="tcard reveal">
+      <div class="tstars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+      <p class="tquote">"The Algorithm brownie is my weekly ritual. Dense, fudgy, precisely seasoned — it has permanently ruined all other brownies for me."</p>
+      <div class="tauth"><div class="tavatar">🧑</div><div><div class="tname">Dev Sharma</div><div class="tloc">Andheri, Mumbai</div></div></div>
+    </div>
+    <div class="tcard reveal">
+      <div class="tstars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+      <p class="tquote">"ChocoLuxe Ice Cream is the benchmark in Mumbai. The depth of flavour from single-origin cacao is extraordinary."</p>
+      <div class="tauth"><div class="tavatar">👩</div><div><div class="tname">Priti Nair</div><div class="tloc">Dadar, Mumbai</div></div></div>
+    </div>
+    <div class="tcard reveal">
+      <div class="tstars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+      <p class="tquote">"The Dark Matter Truffles box was the most memorable gift I have given. My wife called them 'the best chocolate of her life.'"</p>
+      <div class="tauth"><div class="tavatar">👨</div><div><div class="tname">Amit Verma</div><div class="tloc">Thane, Mumbai</div></div></div>
+    </div>
   </div>
 </section>
 
-<!-- CTA BAND -->
-<div class="cta">
-  <h2>Ready for Your Next<br>Chocolate Moment?</h2>
-  <p>Order in seconds via WhatsApp. Delivered warm in 20 minutes.</p>
-  <a href="#menu" class="btn-p">✦ &nbsp;Order Now — It's Worth It</a>
-</div>
-
 <!-- FOOTER -->
-<footer id="contact">
+<footer>
   <div class="fgrid">
     <div class="fbrand">
-      <div class="logo">
-        <div class="logo-mark" style="width:40px;height:40px;font-size:18px">🍫</div>
-        <div class="logo-text"><h1 style="font-size:1.3rem">Cocoa Blisss</h1><span>From Vaibhavi · Est. 2016</span></div>
-      </div>
-      <p>Handcrafted chocolate happiness, delivered with love and precision from our kitchen in Mumbai, India.</p>
-      <div class="flinks">
-        <a href="tel:+919892352557">📞 +91 98923 52557</a>
-        <a href="https://wa.me/919892352557" target="_blank">💬 WhatsApp Chat</a>
-        <a href="mailto:contact4madat@gmail.com">✉ contact4madat@gmail.com</a>
-      </div>
+      <a href="#" class="logo" style="display:inline-block;margin-bottom:18px;">
+        <span class="logo-mark">Cocoa Bliss</span>
+        <span class="logo-sub">Maison du Chocolat · Mumbai</span>
+      </a>
+      <p class="fabout">Handcrafted artisan chocolates and desserts made from single-origin cacao — delivered with the quiet confidence of a Parisian maison.</p>
     </div>
-    <div class="fcol"><h4>Menu</h4><ul><li><a href="#menu">Signature Cakes</a></li><li><a href="#menu">Premium Chocolates</a></li><li><a href="#menu">Ice Cream</a></li><li><a href="#menu">Pastries</a></li><li><a href="#menu">AI Creations</a></li><li><a href="#menu">Brownies</a></li></ul></div>
-    <div class="fcol"><h4>Shop</h4><ul><li><a href="#about">Our Story</a></li><li><a href="#testi">Reviews</a></li><li><a href="#contact">Contact</a></li><li><a href="#menu">Order Now</a></li></ul></div>
+    <div class="fcol">
+      <h4>Collection</h4>
+      <a href="#menu">Signature Cakes</a>
+      <a href="#menu">Artisan Chocolates</a>
+      <a href="#menu">Ice Cream</a>
+      <a href="#menu">Pastries</a>
+      <a href="#menu">AI Creations</a>
+      <a href="#menu">Brownies</a>
+    </div>
+    <div class="fcol">
+      <h4>Contact</h4>
+      <p>📞 +91 9867580794</p>
+      <p>📍 Mumbai, India</p>
+      <p>🕒 Open Daily · 9am – 10pm</p>
+      <p>💳 UPI: vaibhavi.v35-1@okaxis</p>
+      <p>📦 Delivery in ~20 minutes</p>
+    </div>
   </div>
   <div class="fbot">
-    <p>© 2025 Cocoa Blisss. All rights reserved. Made with 🍫 in Mumbai.</p>
-    <p>GitHub Pages · 100% Static · No frameworks</p>
+    <span class="fcopy">© 2025 Cocoa Bliss. All rights reserved.</span>
+    <span class="ftag">"Life is short. Eat the good chocolate."</span>
   </div>
 </footer>
 
-<!-- MODAL -->
-<div class="overlay" id="overlay" onclick="ovClick(event)">
-  <div class="modal" id="modal-box">
-    <div id="fview">
-      <div class="mhead">
-        <button class="mclose" onclick="closeModal()">✕</button>
-        <h3>Place Your Order</h3>
-        <p>Fill in your details — we'll connect via WhatsApp</p>
+<button id="stb" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<!-- ORDER MODAL -->
+<div class="ov" id="oOv">
+  <div class="modal">
+    <button class="mclose" onclick="closeO()">✕</button>
+    <div class="mhdr">
+      <div class="mpstrip">
+        <div class="me" id="mE">🍫</div>
+        <div><div class="mpn" id="mN">—</div><div class="mpp" id="mP">₹—</div></div>
       </div>
-      <div class="mprod">
-        <span class="pem" id="mem">🍫</span>
-        <div><div class="pn" id="mpn">—</div><div class="pp" id="mpp">—</div></div>
-      </div>
-      <div class="mform">
-        <div class="fg"><label>Your Name</label><input type="text" id="fn" placeholder="e.g. Aarav Mehta"/></div>
-        <div class="fg"><label>WhatsApp / Phone</label><input type="tel" id="fp" placeholder="e.g. +91 98765 43210"/></div>
-        <div class="fg"><label>Delivery Address</label><textarea id="fa" placeholder="Street, Landmark, City, PIN"></textarea></div>
-        <button class="btn-place" onclick="placeOrder()">🍫 &nbsp;Send Order via WhatsApp</button>
-        <p class="fnote">By ordering you agree to receive confirmation from our team on WhatsApp. Payment details shared by agent.</p>
-      </div>
+      <h3>Place Your Order</h3>
+      <p class="mnt">Fill in your details — we confirm via WhatsApp within minutes.</p>
     </div>
-    <div class="conf" id="cv">
-      <div class="ci">🎉</div>
-      <h3>Order Confirmed!</h3>
-      <p id="cmsg">Your order has been sent to our WhatsApp team.</p>
-      <div class="trackbox"><span class="tl">Your Tracking Number</span><span class="ti" id="ctrack">#BD00000</span></div>
-      <div class="cc" id="cct">Questions? Call or WhatsApp us at <strong>+91 98923 52557</strong><br>Our team will confirm your order within a few minutes.</div>
-      <div class="cbtns">
-        <a class="btn-wa" id="wa-c" href="#" target="_blank">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.196.592 4.247 1.625 6.006L.057 23.571a.75.75 0 0 0 .92.921l5.648-1.595A11.951 11.951 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.75a9.711 9.711 0 0 1-4.953-1.352l-.357-.213-3.693 1.043 1.012-3.585-.234-.37A9.721 9.721 0 0 1 2.25 12C2.25 6.615 6.615 2.25 12 2.25S21.75 6.615 21.75 12 17.385 21.75 12 21.75z"/></svg>
-          Open WhatsApp Confirmation
-        </a>
-        <div>
-          <a class="btn-wao" id="wa-o" href="#" target="_blank">🏪 [Shop Owner] Reply to Customer</a>
-          <p class="onote">⬆ For shop owner: click to open pre-filled reply to customer's WhatsApp.</p>
-        </div>
-        <button class="btn-dis" onclick="closeModal()">Close & Continue Shopping</button>
+    <div class="mbdy">
+      <div class="fg"><label>Full Name</label><input type="text" id="cN" placeholder="Your name"/></div>
+      <div class="fg"><label>Phone Number</label><input type="tel" id="cP" placeholder="+91 98675 80794"/></div>
+      <div class="fg"><label>Delivery Address</label><textarea id="cA" placeholder="Flat, street, area, city, pincode"></textarea></div>
+      <button class="btn-so" onclick="submitO()"><span>📲</span><span>Confirm via WhatsApp</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM MODAL -->
+<div class="ov" id="cOv">
+  <div class="cmodal">
+    <button class="mclose" onclick="closeC()">✕</button>
+    <div class="ctop">
+      <div class="ccheck">✦</div>
+      <h3>Order Confirmed</h3>
+      <p>Thank you. Your order is being prepared with care.</p>
+    </div>
+    <div class="cbdy">
+      <div class="tbox">
+        <span class="tlbl">Tracking Number</span>
+        <span class="tnum" id="cTN">#TRK000000</span>
+        <div class="tsub" id="cOI">Order ID: #CB000000</div>
+      </div>
+      <div class="irow"><span class="ii">🕒</span><span>Estimated arrival: <strong>approximately 20 minutes</strong></span></div>
+      <div class="irow"><span class="ii">💳</span><span>Payment: <strong>Cash on Delivery or UPI on arrival</strong></span></div>
+      <div class="irow"><span class="ii">🏦</span><span>UPI: <strong>vaibhavi.v35-1@okaxis</strong> · GPay: <strong>98675 80794</strong></span></div>
+      <div class="irow"><span class="ii">📞</span><span>Queries: <strong>+91 98675 80794</strong></span></div>
+      <div class="owner-sec">
+        <h4>Shop Owner — Customer Reply</h4>
+        <p>Send this pre-drafted message to your customer via WhatsApp:</p>
+        <div class="omsg" id="oMsg"></div>
+        <a class="btn-wa" id="owBtn" href="#" target="_blank">💬 &nbsp; Open WhatsApp → Send to Customer</a>
+        <button class="btn-dis" onclick="closeC()">Close</button>
       </div>
     </div>
   </div>
 </div>
 
-<div class="toast" id="toast">✅ Order Placed!</div>
-
 <script>
-const SHOP='919876543210';
-const prods=[
-  {id:'P01',cat:'Signature Cake',name:'Fudge Royale Cake',desc:'Seven layers of dark chocolate sponge, silky ganache and salted caramel drizzle. A true decadent masterpiece.',price:28,em:'🎂',badge:'best',img:'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=700&q=85'},
-  {id:'P02',cat:'Premium Chocolate',name:'Cocoa Bliss Truffles',desc:'Hand-rolled Belgian dark truffles dusted in Ecuadorian cocoa powder — 12 pieces in a luxury gift box.',price:18.5,em:'🍫',badge:null,img:'https://images.unsplash.com/photo-1548741487-18d363dc4469?w=700&q=85'},
-  {id:'P03',cat:'Ice Cream',name:'ChocoLuxe Ice Cream',desc:'Triple-chocolate gelato swirled with dark, milk and white Belgian chocolate ribbons. Rich, creamy, unforgettable.',price:12,em:'🍨',badge:'new',img:'https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=700&q=85'},
-  {id:'P04',cat:'Chocolate Pastry',name:'Death by Chocolate',desc:'A towering éclair filled with bittersweet crème, topped with mirror glaze and edible gold leaf.',price:9,em:'🥐',badge:null,img:'https://images.unsplash.com/photo-1490367532201-b9bc1dc483f6?w=700&q=85'},
-  {id:'P05',cat:'AI Creation',name:'NeuroChoco Delight',desc:'AI-designed flavour fusion: sea-salt caramel + espresso + 78% dark in a dome-shaped entremet.',price:32,em:'🤖',badge:'ai',img:'https://images.unsplash.com/photo-1511381939415-e44f635c4bd6?w=700&q=85'},
-  {id:'P06',cat:'Chocolate Brownie',name:'The Algorithm',desc:'Fudge-dense triple-chocolate brownie engineered for maximum cocoa intensity. Guilt inevitable.',price:7.5,em:'🍫',badge:null,img:'https://images.unsplash.com/photo-1564355808539-22fda35bed7e?w=700&q=85'},
-  {id:'P07',cat:'Signature Cake',name:'Midnight Velvet Torte',desc:'Black cocoa sponge with whipped ganache, cherry coulis and a dramatic mirror-glaze finish.',price:30,em:'🎂',badge:null,img:'https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=700&q=85'},
-  {id:'P08',cat:'Premium Chocolate',name:'Grand Cru Selection',desc:'16 single-origin squares — Ghana 72%, Peru 68%, Vietnam 64% — for the true connoisseur.',price:24,em:'🍫',badge:null,img:'https://images.unsplash.com/photo-1481391319762-47dff72954d9?w=700&q=85'},
-  {id:'P09',cat:'Chocolate Brownie',name:'Ganache Overflow',desc:'Warm-served brownie with hot dark ganache lava core, served with vanilla-bean ice cream.',price:10,em:'🍫',badge:'best',img:'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=700&q=85'},
-  {id:'P10',cat:'Chocolate Pastry',name:'Noir Opera Slice',desc:'Classic French Opéra in dark chocolate — almond joconde, coffee crème and bittersweet glaze.',price:11,em:'🥐',badge:null,img:'https://images.unsplash.com/photo-1519915028121-7d3463d20b13?w=700&q=85'},
-  {id:'P11',cat:'Ice Cream',name:'Obsidian Ripple',desc:'Activated-charcoal dark chocolate ice cream with caramel ribbon and cocoa nib crunch. Jet black. Intensely rich.',price:13.5,em:'🍨',badge:'new',img:'https://images.unsplash.com/photo-1501443762994-82bd5dace89a?w=700&q=85'},
-  {id:'P12',cat:'AI Creation',name:'Quantum Praline Box',desc:'AI-generated combos: yuzu-miso dark, raspberry-smoked milk, black-sesame white — 9 pralines.',price:26,em:'🤖',badge:'ai',img:'https://images.unsplash.com/photo-1549007953-2f2dc0b24019?w=700&q=85'},
-];
-const testis=[
-  {n:'Priya S.',r:'Regular Customer',t:"The Fudge Royale Cake is literally the best thing I've ever tasted. Arrived in 20 minutes, still slightly warm. Ordered it five times this month!",av:'P'},
-  {n:'Arjun M.',r:'Food Blogger',t:"As someone who reviews desserts for a living, Cocoa Blisss is genuinely world-class. The NeuroChoco Delight combos are unlike anything I've encountered.",av:'A'},
-  {n:'Fatima K.',r:'Gift Shopper',t:"Ordered the Grand Cru Selection as a gift — arrived beautifully packaged and my colleague was absolutely blown away. Ordering again for sure.",av:'F'},
-  {n:'Rohan D.',r:'Dessert Enthusiast',t:"The Algorithm brownie is dangerously good. Fudgy, intense, and that ganache core? Pure madness. My family fights over the last piece every time.",av:'R'},
-  {n:'Sneha P.',r:'Event Planner',t:"Used Cocoa Blisss for a corporate event. The WhatsApp ordering was seamless, delivery was on time, and every guest was asking for the shop's number!",av:'S'},
-  {n:'Dev T.',r:'Tech Founder',t:"Discovered them for the AI collection, came back for the ChocoLuxe. The tech-aesthetic and gourmet chocolate pairing is absolute genius.",av:'D'},
+/* PRODUCTS */
+const PRODS = [
+  {id:'p1',name:'Fudge Royale Cake',category:'Signature Cake',emoji:'🎂',badge:'Best Seller',price:799,desc:'A four-layer dark chocolate fudge cake draped in midnight ganache, crowned with hand-rolled truffles and edible 24k gold dust.',img:'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600&q=80'},
+  {id:'p2',name:'Velvet Noir Cake',category:'Signature Cake',emoji:'🍰',badge:'New Arrival',price:749,desc:'Belgian dark chocolate sponge with silky midnight ganache frosting — restrained, elegant, and devastatingly rich.',img:'https://images.unsplash.com/photo-1606890658317-7d14490b76fd?w=600&q=80'},
+  {id:'p3',name:'Cocoa Bliss Chocolates',category:'Artisan Chocolates',emoji:'🍫',badge:'Gift Edition',price:599,desc:'Sixteen handcrafted bonbons — salted caramel, hazelnut praline, raspberry ganache — presented in a lacquered gift box.',img:'https://images.unsplash.com/photo-1549312166-91e2e7cae2b3?w=600&q=80'},
+  {id:'p4',name:'ChocoLuxe Ice Cream',category:'Chocolate Ice Cream',emoji:'🍨',badge:'Fan Favourite',price:349,desc:'Triple-chocolate gelato made with 70% Ecuadorian cacao, swirled with warm fudge ribbons and hand-crushed cocoa nibs.',img:'https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=600&q=80'},
+  {id:'p5',name:'Death By Chocolate',category:'Chocolate Pastry',emoji:'🥐',badge:'Legendary',price:429,desc:'Five strata of chocolate — mousse, sponge, ganache, crunch, and mirror glaze — assembled in a single impossibly decadent slice.',img:'https://images.unsplash.com/photo-1551024601-bec78aea704b?w=600&q=80'},
+  {id:'p6',name:'NeuroChoco Delight',category:'AI Cake',emoji:'🤖',badge:'AI Signature',price:899,desc:'Our AI-designed masterpiece — a neural-patterned chocolate dome with dynamically layered espresso, dark, milk, and white chocolate.',img:'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=600&q=80'},
+  {id:'p7',name:'The Algorithm',category:'Chocolate Brownie',emoji:'🟫',badge:'Cult Classic',price:299,desc:'A dense, crinkle-topped brownie engineered to perfection — gooey-centred, loaded with dark chocolate shards and a whisper of Fleur de Sel.',img:'https://images.unsplash.com/photo-1607920592519-bab2a80a5dc2?w=600&q=80'},
+  {id:'p8',name:'Choco Noir Éclairs',category:'Chocolate Pastry',emoji:'🍩',badge:'Parisian',price:389,desc:'Crisp choux filled with bittersweet Valrhona crème diplomat, glazed with hand-poured dark chocolate mirror. Box of four.',img:'https://images.unsplash.com/photo-1570197788417-0e82375c9371?w=600&q=80'},
+  {id:'p9',name:'Dark Matter Truffles',category:'Artisan Chocolates',emoji:'⬛',badge:'Limited Run',price:699,desc:'85% cacao truffles with a molten liquid core, each rolled in activated charcoal cocoa powder for a dramatic, intense finish.',img:'https://images.unsplash.com/photo-1559181567-c3190ca9d041?w=600&q=80'},
+  {id:'p10',name:'Hazel Protocol',category:'AI Cake',emoji:'🌰',badge:'AI Inspired',price:849,desc:'AI-optimised hazelnut gateau — alternating gianduja mousse and feuilletine crunch, finished with a fractal cocoa pattern.',img:'https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=600&q=80'},
+  {id:'p11',name:'Triple Stack Brownie',category:'Chocolate Brownie',emoji:'🍫',badge:'Stack Edition',price:379,desc:'Three brownie strata sandwiched with dark chocolate buttercream and hand-crushed Oreos — architectural indulgence.',img:'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=600&q=80'},
+  {id:'p12',name:'Midnight Gelato',category:'Chocolate Ice Cream',emoji:'🍦',badge:'Premium',price:399,desc:'Authentic Italian-style gelato from single-origin Peruvian dark chocolate — dense, silky, and hauntingly deep.',img:'https://images.unsplash.com/photo-1501443762994-82bd5dace89a?w=600&q=80'},
 ];
 
-function renderProducts(){
-  const bmap={best:'<span class="cbadge cb-best">⭐ Bestseller</span>',new:'<span class="cbadge cb-new">🆕 New</span>',ai:'<span class="cbadge cb-ai">✨ AI Pick</span>'};
-  document.getElementById('pgrid').innerHTML=prods.map(p=>`
-    <div class="pcard">
-      <div class="cimg">
-        <img src="${p.img}" alt="${p.name}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1481391319762-47dff72954d9?w=700&q=85'"/>
-        <div class="cimg-ov"></div><div class="cimg-ov2"></div>
-        <div class="cbadge-wrap">${p.badge?bmap[p.badge]:''}</div>
+/* RENDER GRID */
+const g = document.getElementById('pgrid');
+PRODS.forEach((p,i) => {
+  const c = document.createElement('div');
+  c.className = 'pcard reveal';
+  c.style.transitionDelay = (i*.04)+'s';
+  c.innerHTML = `
+    <div class="pimg-wrap">
+      <span class="pbadge">${p.badge}</span>
+      <img src="${p.img}" alt="${p.name}" loading="lazy"
+        onerror="this.style.display='none';this.parentElement.style.minHeight='255px';this.parentElement.style.background='var(--bark)';this.parentElement.innerHTML+='<div style=\\"display:flex;align-items:center;justify-content:center;height:255px;font-size:4.5rem\\">${p.emoji}</div>'"/>
+    </div>
+    <div class="pbody">
+      <div class="pcat">${p.category}</div>
+      <div class="pname">${p.name}</div>
+      <div class="pdesc">${p.desc}</div>
+      <div class="pfooter">
+        <div class="pprice"><sub>₹</sub>${p.price}</div>
+        <button class="btn-on" onclick='openM(${JSON.stringify(p)})'>Order Now</button>
       </div>
-      <div class="cbody">
-        <div class="ccat">${p.cat}</div>
-        <div class="cname">${p.name}</div>
-        <div class="cdesc">${p.desc}</div>
-        <div class="cfoot">
-          <div class="cprice"><sup>₹</sup>₹{p.price.toFixed(2)}</div>
-          <button class="btn-order" onclick="openModal('${p.id}')"><span class="ot">Order Now</span></button>
-        </div>
-      </div>
-    </div>`).join('');
-}
-function renderTestis(){
-  document.getElementById('tgrid').innerHTML=testis.map(t=>`
-    <div class="tcard reveal">
-      <div class="tquote">"</div>
-      <div class="tstars">★★★★★</div>
-      <div class="ttext">${t.t}</div>
-      <div class="tauthor"><div class="tav">${t.av}</div><div><div class="tname">${t.n}</div><div class="trole">${t.r}</div></div></div>
-    </div>`).join('');
-  observe();
-}
-function renderMarquee(){
-  const items=['Chocolate Cakes','Premium Truffles','AI Creations','Artisan Brownies','Chocolate Ice Cream','Signature Pastries','20-Minute Delivery','Belgian Cocoa'];
-  const h=items.map(i=>`<span class="mq-item">${i}<span class="mq-sep">✦</span></span>`).join('');
-  document.getElementById('mq-track').innerHTML=h+h;
-}
+    </div>`;
+  g.appendChild(c);
+});
 
-let curProd=null;
-function openModal(id){
-  curProd=prods.find(p=>p.id===id);
-  document.getElementById('mem').textContent=curProd.em;
-  document.getElementById('mpn').textContent=curProd.name;
-  document.getElementById('mpp').textContent='$'+curProd.price.toFixed(2);
-  document.getElementById('fview').style.display='';
-  document.getElementById('cv').classList.remove('active');
-  ['fn','fp','fa'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('overlay').classList.add('open');
-  document.body.style.overflow='hidden';
-}
-function closeModal(){
-  document.getElementById('overlay').classList.remove('open');
-  document.body.style.overflow='';curProd=null;
-}
-function ovClick(e){if(e.target===document.getElementById('overlay'))closeModal()}
-function uid(){return 'BD'+Math.floor(10000+Math.random()*90000)}
-function tid(){return 'TRK-BD-'+Date.now().toString(36).toUpperCase().slice(-6)}
-function placeOrder(){
-  const name=document.getElementById('fn').value.trim();
-  const phone=document.getElementById('fp').value.trim();
-  const addr=document.getElementById('fa').value.trim();
-  if(!name)return showToast('Please enter your name');
-  if(!phone)return showToast('Please enter your phone number');
-  if(!addr)return showToast('Please enter your delivery address');
-  const oid=uid(),trkid=tid(),p=curProd;
-  const now=new Date().toLocaleString('en-IN',{timeZone:'Asia/Kolkata'});
-  const custMsg=`🍫 *New Order — Cocoa Blisss*\n━━━━━━━━━━━━━━━━━━━━\n📦 *Product:* ${p.name}\n💰 *Price:* $${p.price.toFixed(2)}\n👤 *Customer:* ${name}\n📞 *Phone:* ${phone}\n📍 *Address:* ${addr}\n🔖 *Order ID:* #${oid}\n📡 *Tracking:* ${trkid}\n🕐 *Placed:* ${now}\n━━━━━━━━━━━━━━━━━━━━\n💳 *Payment:*\n• UPI: belgedelights@upi\n• HDFC Bank | Acc: 00123456789 | IFSC: HDFC0001234\n• Cash on delivery available\n━━━━━━━━━━━━━━━━━━━━\n🙏 Thank you for choosing Cocoa Blisss! Your handcrafted order is being prepared. We'll confirm shortly. 🍫`;
-  const ownerMsg=`🍫 *Hello ${name}!* This is Cocoa Blisss.\n\n✅ *Your order is confirmed!*\n━━━━━━━━━━━━━━━━━━━━\n📦 *Item:* ${p.name}\n💰 *Amount:* $${p.price.toFixed(2)}\n🔖 *Order ID:* #${oid}\n📡 *Tracking:* ${trkid}\n━━━━━━━━━━━━━━━━━━━━\n🚀 *Your order will arrive in 20 minutes.*\n\n💳 Pay via UPI (belgedelights@upi) or cash on delivery.\n📞 +91 98765 43210 | wa.me/919876543210\n\n🙏 Thank you! — Team Cocoa Blisss 🍫✨`;
-  const waShop=`https://wa.me/${SHOP}?text=${encodeURIComponent(custMsg)}`;
-  const custNum=phone.replace(/\D/g,'');
-  const waOwner=`https://wa.me/${custNum}?text=${encodeURIComponent(ownerMsg)}`;
-  document.getElementById('cmsg').textContent=`Your order for ${p.name} has been sent! We'll confirm shortly.`;
-  document.getElementById('ctrack').textContent=`#${oid} · ${trkid}`;
-  document.getElementById('wa-c').href=waShop;
-  document.getElementById('wa-o').href=waOwner;
-  document.getElementById('fview').style.display='none';
-  document.getElementById('cv').classList.add('active');
-  window.open(waShop,'_blank');
-  showToast(`✅ Order Placed! Tracking: #${oid}. Thank you!`);
-}
-function toggleNav(){document.getElementById('mnav').classList.toggle('open')}
-function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),4500)}
+/* MARQUEE */
+const mq = document.getElementById('mq');
+const mi = ['Fudge Royale Cake','Cocoa Bliss Chocolates','Death By Chocolate','NeuroChoco Delight','The Algorithm','ChocoLuxe Ice Cream','Dark Matter Truffles','Velvet Noir Cake'];
+const mhtml = [...mi,...mi].map(t=>`<span>${t}</span><span class="dot">✦</span>`).join('');
+mq.innerHTML = mhtml + mhtml;
 
 /* CURSOR */
-const CE=document.getElementById('cur'),CR=document.getElementById('cur-ring');
-let mx=0,my=0,rx=0,ry=0;
-document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;CE.style.left=mx+'px';CE.style.top=my+'px'});
-(function animR(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;CR.style.left=rx+'px';CR.style.top=ry+'px';requestAnimationFrame(animR)})();
-document.querySelectorAll('a,button,.pcard,.feat,.tcard').forEach(el=>{
-  el.addEventListener('mouseenter',()=>{CE.style.width='20px';CE.style.height='20px';CR.style.width='56px';CR.style.height='56px';CR.style.opacity='.4'});
-  el.addEventListener('mouseleave',()=>{CE.style.width='12px';CE.style.height='12px';CR.style.width='38px';CR.style.height='38px';CR.style.opacity='1'});
+const cur = document.getElementById('cursor');
+const fol = document.getElementById('cursor-follower');
+let mx=0,my=0,fx=0,fy=0;
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX;my=e.clientY;
+  cur.style.left=mx+'px';cur.style.top=my+'px';
 });
+(function af(){
+  fx+=(mx-fx)*0.1;fy+=(my-fy)*0.1;
+  fol.style.left=fx+'px';fol.style.top=fy+'px';
+  requestAnimationFrame(af);
+})();
 
 /* SCROLL */
-window.addEventListener('scroll',()=>document.getElementById('hdr').classList.toggle('scrolled',scrollY>60));
-
-function observe(){
-  const io=new IntersectionObserver(entries=>{
-    entries.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('up'),i*75);io.unobserve(e.target)}});
-  },{threshold:.08});
-  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
-}
-
-document.addEventListener('DOMContentLoaded',()=>{
-  renderProducts();renderTestis();renderMarquee();observe();
-  document.querySelectorAll('nav a').forEach(a=>a.addEventListener('click',()=>document.getElementById('mnav').classList.remove('open')));
-  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+const hb = document.getElementById('hb');
+const stb = document.getElementById('stb');
+window.addEventListener('scroll',()=>{
+  hb.classList.toggle('scrolled',window.scrollY>60);
+  stb.classList.toggle('v',window.scrollY>500);
 });
+
+/* REVEAL */
+const io = new IntersectionObserver(es=>{
+  es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');io.unobserve(e.target);}});
+},{threshold:0.08});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+/* ORDER */
+let CP = null;
+const SH = '919867580794';
+
+function openM(p){
+  CP=p;
+  document.getElementById('mE').textContent=p.emoji;
+  document.getElementById('mN').textContent=p.name;
+  document.getElementById('mP').textContent='₹'+p.price+' per serving';
+  ['cN','cP','cA'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('oOv').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeO(){document.getElementById('oOv').classList.remove('open');document.body.style.overflow='';}
+function closeC(){document.getElementById('cOv').classList.remove('open');document.body.style.overflow='';}
+document.getElementById('oOv').addEventListener('click',function(e){if(e.target===this)closeO();});
+document.getElementById('cOv').addEventListener('click',function(e){if(e.target===this)closeC();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeO();closeC();}});
+
+function gId(px,l){return px+Date.now().toString().slice(-l);}
+
+function submitO(){
+  const name=document.getElementById('cN').value.trim();
+  const phone=document.getElementById('cP').value.trim();
+  const addr=document.getElementById('cA').value.trim();
+  if(!name||!phone||!addr){alert('Please complete all fields.');return;}
+  if(!/^[\d\s+\-()]{7,15}$/.test(phone)){alert('Please enter a valid phone number.');return;}
+  const oid=gId('CB',6);
+  const tid='TRK'+Math.floor(Math.random()*900000+100000);
+  const p=CP;
+  const ts=new Date().toLocaleString('en-IN',{timeZone:'Asia/Kolkata'});
+
+  const cm=`🍫 *COCOA BLISS — New Order*\n\n┌─────────────────────────────\n│ 🛒 ${p.name}\n│ 🏷️ Category: ${p.category}\n│ 💰 Price: ₹${p.price}\n└─────────────────────────────\n\n👤 Name: ${name}\n📞 Phone: ${phone}\n📍 Address: ${addr}\n\n🔖 Order ID: #${oid}\n📦 Tracking: #${tid}\n🕒 Placed: ${ts}\n\n💳 *Payment:* Cash / UPI on delivery\n🏦 UPI: vaibhavi.v35-1@okaxis | GPay: 9867580794\n\nThank you for choosing Cocoa Bliss.\nYour order will arrive in ~20 minutes.\nQueries: +91 98675 80794\n\n— Cocoa Bliss · Maison du Chocolat 🍫`;
+
+  const pclean=phone.replace(/\D/g,'');
+  const om=`Hello ${name}! ✦\n\nYour order at *Cocoa Bliss* is confirmed.\n\n─────────────────────────\n🛒 *${p.name}*\n💰 Amount: ₹${p.price}\n🔖 Order ID: #${oid}\n📦 Tracking: #${tid}\n─────────────────────────\n\n🚚 Estimated arrival: *20 minutes*\n💳 Please keep ₹${p.price} ready (Cash or UPI)\n🏦 UPI: vaibhavi.v35-1@okaxis\n\nFor assistance: +91 98675 80794\n\nThank you for choosing *Cocoa Bliss*.\nWe hope every bite delights you.\n\n— Cocoa Bliss · Maison du Chocolat 🍫`;
+
+  document.getElementById('cTN').textContent='#'+tid;
+  document.getElementById('cOI').textContent='Order ID: #'+oid;
+  document.getElementById('oMsg').textContent=om;
+  document.getElementById('owBtn').href=`https://wa.me/${pclean}?text=${encodeURIComponent(om)}`;
+  closeO();
+  document.getElementById('cOv').classList.add('open');
+  window.open(`https://wa.me/${SH}?text=${encodeURIComponent(cm)}`,'_blank');
+}
 </script>
 </body>
 </html>
